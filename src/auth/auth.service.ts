@@ -26,7 +26,7 @@ export class AuthService {
 
     const payload = { sub: user.id, role: user.role };
     return {
-      accessToken: this.jwtService.sign(payload, { secret: 'key', expiresIn: '5h' }),
+      accessToken: this.jwtService.sign(payload, { secret: 'key', expiresIn: '1d' }),
       refreshToken: this.jwtService.sign(payload, { secret: 'refreshkey', expiresIn: '7d' }),
     };
   }
@@ -44,8 +44,8 @@ export class AuthService {
 
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 587,
-      secure: false, 
+      port: 465,
+      secure: true, 
       auth: {
         user: 'shashilata9519@gmail.com',
         pass: 'nswo frds juog qvrc',
