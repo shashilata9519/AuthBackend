@@ -10,7 +10,7 @@ export class AuthService {
   constructor(
     private usersService: UsersService,
     private jwtService: JwtService,
-  ) {}
+  ) { }
 
   async register(name: string, email: string, password: string) {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -44,16 +44,16 @@ export class AuthService {
 
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
-      port: 465,
-      secure: true,
+      port: 587,
+      secure: false, 
       auth: {
         user: 'shashilata9519@gmail.com',
         pass: 'nswo frds juog qvrc',
       },
     });
-    
+
     await transporter.sendMail({
-      from:'shashilata9519@gmail.com',
+      from: 'shashilata9519@gmail.com',
       to: email,
       subject: 'Your OTP Code',
       text: `Your OTP is ${otp}, valid for 10 minutes.`,
@@ -63,7 +63,7 @@ export class AuthService {
   }
 
   async resetPassword(email: string, otp: string, newPassword: string) {
-    const user:any = await this.usersService.findByEmail(email);
+    const user: any = await this.usersService.findByEmail(email);
     if (!user || user.otp !== otp || user.otpExpiresAt < new Date()) throw new UnauthorizedException('Invalid OTP');
 
     user.password = await bcrypt.hash(newPassword, 10);
