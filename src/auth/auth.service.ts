@@ -43,10 +43,15 @@ export class AuthService {
     await this.usersService.save(user);
 
     const transporter = nodemailer.createTransport({
-      service: 'gmail',
-      auth: { user: 'shashilata9519@gmail.com', pass: 'nswo frds juog qvrc' },
+      host: 'smtp.gmail.com',
+      port: 465,
+      secure: true,
+      auth: {
+        user: 'shashilata9519@gmail.com',
+        pass: 'nswo frds juog qvrc',
+      },
     });
-
+    
     await transporter.sendMail({
       from:'shashilata9519@gmail.com',
       to: email,
