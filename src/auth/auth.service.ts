@@ -19,7 +19,7 @@ export class AuthService {
 
   async login(email: string, password: string) {
     const user = await this.usersService.findByEmail(email);
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user) throw new UnauthorizedException('User not found');
 
     const match = await bcrypt.compare(password, user.password);
     if (!match) throw new UnauthorizedException('Invalid credentials');
@@ -45,7 +45,7 @@ export class AuthService {
     const transporter = nodemailer.createTransport({
       host: 'smtp.gmail.com',
       port: 465,
-      secure: true, 
+      secure: true,
       auth: {
         user: 'shashilata9519@gmail.com',
         pass: 'nswo frds juog qvrc',
@@ -73,4 +73,25 @@ export class AuthService {
 
     return { message: 'Password reset successful' };
   }
+ async refreshToken(refreshToken: string) {
+    try {
+  
+      const payload = this.jwtService.verify(refreshToken, { secret: 'refreshkey' });
+
+     
+      const user = await this.usersService.findById(payload.sub);
+      if (!user) throw new UnauthorizedException('User not found');
+
+    
+      const newAccessToken = this.jwtService.sign(
+        { sub: user.id, role: user.role },
+        { secret: 'key', expiresIn: '1d' },
+      );
+
+      return { accessToken: newAccessToken };
+    } catch (e) {
+      throw new UnauthorizedException('Invalid or expired refresh token');
+    }
+  }
 }
+
